@@ -1,0 +1,60 @@
+/*html {
+	--main-r: #A84E47;
+	--main-g: #49AA64;
+	--main-b: #4F5691;
+	--main-c: #54C0C6;
+	--main-m: #A85AA1;
+	--main-y: #C9D38D;
+};*/
+
+html, body {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+@keyframes bg-pan-down {
+  0% {
+    background-position: 50% 0%;
+  }
+  100% {
+    background-position: 50% 100%;
+  }
+}
+
+body.c64 {
+	background: linear-gradient(
+		to bottom,
+		#A84E47,
+		#A84E47 25%,
+		#49AA64 25%,
+		#49AA64 50%,
+		#4F5691 50%,
+		#4F5691 75%,
+		#A85AA1 75%,
+		#A85AA1
+	);
+
+	background-size: 100% 40px;
+	background-blend-mode: lighten;
+	blend-mode: multiply;
+	animation: bg-pan-down 1s ease-in-out infinite both;
+}
+
+#no {
+	height: 100vh;
+	width: auto;
+	/*background-color: black;*/
+}
+.c64 #no {
+	background-blend-mode: color-dodge;
+	background: linear-gradient(
+		to bottom,
+		#020202,
+		black 50%,
+		#090909 90%,
+		#191919
+	);
+	background-size: 100% 5px;
+	animation: bg-pan-down 1s ease-in-out infinite both;
+}
