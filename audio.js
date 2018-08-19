@@ -8,17 +8,8 @@
 // 	p()
 // });
 
-// var es = ['click', 'touchdown', 'touchmove', 'keydown'];
-
-// var go = () => {
-// 	es.map(en => reli(en, go))
-// 	p()
-// }
-
-// es.map(en => aeli(en, go));
-
 const a = new AudioContext()
-function k(w,x,y){
+function osc(w,x,y){
 	// console.log(w, x, y);
 	v=a.createOscillator()
 	u=a.createGain()
@@ -33,9 +24,22 @@ function k(w,x,y){
 
 
 // requestAnimationFrame(play);
-setInterval(function(){ k(12,1233,100); k(3,603,200)}, 1000)
-setInterval(function(){ k(6,1246,100); k(8,1444,100) }, 500)
-setInterval(function(){ k(8,728,100); k(8,728,100) }, 3000)
-setInterval(function(){ k(8,728,400); k(8,728,400) }, 3000)
-setInterval(function(){ k(8,364,100); k(8,364,100) }, 6000)
-setInterval(function(){ k(8,364,100); k(8,157,200) }, 400)
+const p = () => {
+	setInterval(function(){ osc(12,1233,100); osc(3,603,200)}, 1000)
+	setInterval(function(){ osc(6,1246,100); osc(8,1444,100) }, 500)
+	setInterval(function(){ osc(8,728,100); osc(8,728,100) }, 3000)
+	setInterval(function(){ osc(8,728,400); osc(8,728,400) }, 3000)
+	setInterval(function(){ osc(8,364,100); osc(8,364,100) }, 6000)
+	setInterval(function(){ osc(8,220,100); osc(8,157,200) }, 1400)
+}
+
+
+
+var es = ['click', 'touchdown', 'touchmove', 'keydown'];
+
+var go = () => {
+	es.map(en => reli(en, go))
+	p()
+	a.resume();
+}
+es.map(en => aeli(en, go));
