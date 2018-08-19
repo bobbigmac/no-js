@@ -4,32 +4,27 @@ kontra.init('no');
 let sprite = kontra.sprite({
 	name: 'bob',
 	faction: 'player',
-	// x: 0,
-	// y: 80,
-	color: 'red',
-	width: 40,
-	height: 40,
-	// move the sprite 2px to the right every frame
-	// dx: 2
+	x: 120,
+	y: 300,
+	color: '#C9D38D',
+	width: 10,
+	height: 10,
+	speed: 0.1,
 });
 
-// kontra.pointer.track(sprite);
-sprite.position.clamp(0, 0, 440, 600);
-const speed = 0.1;
+sprite.position.clamp(0, 0, 230, 310);
 
 let loop = kontra.gameLoop({
-	fps: 60,
+	fps: 30,
 	update: function() {
-		sprite.x = sprite.x + ((kontra.pointer.x - sprite.x) * speed);
-		sprite.y = sprite.y + ((kontra.pointer.y - sprite.y) * speed);
+		const scale = 320 / kontra.canvas.offsetHeight;
+		x = kontra.pointer.x * scale;
+		y = kontra.pointer.y * scale;
+
+		sprite.dx = (x - sprite.x) * sprite.speed;
+		sprite.dy = (y - sprite.y) * sprite.speed;
 
 		sprite.update();
-		
-		// wrap the sprites position when it reaches
-		// the edge of the screen
-		// if (sprite.x > kontra.canvas.width) {
-		// 	sprite.x = -sprite.width;
-		// }
 	},
 	render: function() {
 		//TODO: pool.render
