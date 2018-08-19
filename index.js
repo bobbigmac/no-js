@@ -1,7 +1,7 @@
 
 kontra.init('no');
 
-let sprite = kontra.sprite({
+let player = kontra.sprite({
 	name: 'bob',
 	faction: 'player',
 	x: 120,
@@ -12,7 +12,7 @@ let sprite = kontra.sprite({
 	speed: 0.1,
 });
 
-sprite.position.clamp(0, 0, 230, 310);
+player.position.clamp(0, 0, 230, 310);
 
 let loop = kontra.gameLoop({
 	fps: 30,
@@ -21,14 +21,14 @@ let loop = kontra.gameLoop({
 		x = kontra.pointer.x * scale;
 		y = kontra.pointer.y * scale;
 
-		sprite.dx = (x - sprite.x) * sprite.speed;
-		sprite.dy = (y - sprite.y) * sprite.speed;
+		player.dx = (x - player.x) * player.speed;
+		player.dy = (y - player.y) * player.speed;
 
-		sprite.update();
+		player.update();
 	},
 	render: function() {
 		//TODO: pool.render
-		sprite.render();
+		player.render();
 	}
 });
 
