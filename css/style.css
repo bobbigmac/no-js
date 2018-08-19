@@ -53,7 +53,7 @@ body.c64 {
 	bottom: 0;
 	right: 0;
 	left: 0;
-	opacity: 0.8;
+	opacity: 0.6;
 	mix-blend-mode: exclusion;
 }
 .c64 #no, .overlay {
