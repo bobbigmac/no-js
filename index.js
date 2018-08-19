@@ -18,8 +18,8 @@ let loop = kontra.gameLoop({
 	fps: 30,
 	update: function() {
 		const scale = 320 / kontra.canvas.offsetHeight;
-		x = kontra.pointer.x * scale;
-		y = kontra.pointer.y * scale;
+		x = (kontra.pointer.x * scale) - (player.width / 2);
+		y = (kontra.pointer.y * scale) - (player.height / 2);
 
 		player.dx = (x - player.x) * player.speed;
 		player.dy = (y - player.y) * player.speed;
