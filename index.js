@@ -1,129 +1,96 @@
 
-const getNow = () => (new Date()).getTime()
-const k = kontra;
 k.init('no');
 
-const bullets = k.pool({
-  create: kontra.sprite,
-  maxSize: 1000,
-});
-
-const enemies = k.pool({
-  create: kontra.sprite,
-  maxSize: 100,
-});
-
-const btypes = [{
-	speed: 10,
-	damage: 10,
-	width: 4,
-	height: 5,
-	color: 'green',
-	ttl: 60,
-	isAlive: function() { return this.ttl > 0 && this.y < 320 && this.y > 0 },
-	snd: () => { osc(8,1328,100); osc(8,1328,100); }
-}]
-
-const fire = function(type = 0, faction = 1) {
-	const bt = btypes[type];
-
-	bullets.get(Object.assign({
-		faction: this.faction,
-		x: this.x + ((this.width / 2) - 1),
-		y: this.y - (-6 * this.faction),
-		dy: this.faction * bt.speed,
-	}, bt))
-
-	bt.snd && bt.snd();
-};
+import bullets from './bullets.mod.js';
+import enemies from './enemies.mod.js';
 
 const player = k.sprite({
-	name: 'bob',
+	name: 'player',
+	hp: 100,
 	faction: -1,
-	x: (sx = 120),
-	y: (sy = 300),
+	x: sx,
+	y: sy,
 	color: '#C9D38D',
 	width: 10,
 	height: 10,
 	speed: 0.1,
 	fireRate: 100,
 	fired: getNow(),
-	fire: fire
+	ttl: Infinity,
+	isAlive: function() { return this.hp > 0; },
+	fire: bullets.fire
 });
 
-const etypes = [
-	{
-		faction:  1,
-		color: 'red',
-		width: 10,
-		height: 10,
-		fireRate: 1000,
-		fired: getNow(),
-		speed: 1,
-		move: function() {
-			this.dx = this.seed * this.speed * Math.random(); 
-			this.dy = this.speed * Math.random() * 4;
-		},
-		fire: fire,
-		x: sx,
-		y: 0,
-		ttl: 2000
-	}
-]
-const makeEnemy = (type = 0) => {
-	const et = etypes[type];
-	const enemy = Object.assign({
-		dx: et.speed,
-		dy: et.speed,
-		seed: Math.random() - 0.5,
-		isAlive: function() { return this.ttl > 0 && this.y < 320 }
-	}, et);
-	enemy.move()
-	console.log(enemy);
-	enemies.get(enemy)
+player.position.clamp(0, 0, 230, 310);
+
+const endGame = () => {
+	//TODO: Something interesting
+	qs('#no').style.opacity = 0.5;
+	loop.stop();
 }
 
-player.position.clamp(0, 0, 230, 310);
 let renders = 0;
-
 const loop = k.gameLoop({
-	fps: 30,
+	fps: 60,
 	update: function() {
 		const scale = 320 / k.canvas.offsetHeight;
 		const now = getNow();
 
-		x = (k.pointer.x || (sx / scale))
+		let x = (k.pointer.x || (sx / scale))
 		x = (x * scale) - (player.width / 2);
-		y = (k.pointer.y || (sy / scale))
+		let y = (k.pointer.y || (sy / scale))
 		y = (y * scale) - (player.height / 2);
-
-		// console.log(k.pointer.x, k.pointer.y, x, y);
 
 		player.dx = (x - player.x) * player.speed;
 		player.dy = (y - player.y) * player.speed;
 
+		// console.log(player.dx, player.dy, player.x, player.y, player.width, player.height);
 		if(k.keys.pressed('space') && now > player.fired + player.fireRate) {
 			player.fire(0, -1);
 			player.fired = now;
 		}
+		
+		bullets.getAliveObjects().map(b => {
+			if(b.faction !== player.faction && player.collidesWith(b)) {
+				player.hp -= b.damage || 1;
+				b.hp = 0;
+				console.log('Player hit, took', b.damage, 'damage. Has health', player.hp)
+			}
+			if(b.faction === player.faction) {
+				enemies.getAliveObjects().some(e => {
+					if(b.collidesWith(e)) {
+						e.hp--;
+						b.hp = 0;
+					}
+				})
+			}
+		});
 
-		bullets.update();
-		
-		if(!(renders % 2)) {
-			enemies.getAliveObjects().map(x => {
-				x.move();
-				if(now > x.fired + x.fireRate) {
-					x.fire();
-					x.fired = now;
-				}
-			});
+		enemies.getAliveObjects().map(e => {
+			e.move();
+			if(now > e.fired + e.fireRate) {
+				e.fire();
+				e.fired = now;
+			}
+			if(player.collidesWith(e)) {
+				player.hp -= e.speed
+			}
+		});
+
+		if(!player.isAlive()) {
+			endGame();
 		}
+
 		enemies.update();
-		
 		player.update();
 
+		bullets.update();
+
 		if(!(renders % 100)) {
-			makeEnemy(0);
+			enemies.make(0);
+		}
+		if(!(renders % 240)) {
+			enemies.make(1);
 		}
 		renders++;
 	},
