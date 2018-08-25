@@ -62,7 +62,9 @@ const loop = k.gameLoop({
 				player.hp -= b.damage || 1;
 				b.hp = 0;
 				if(player.hp <= 0) {
-					repeat(() => particles.make(1, b, player), 30)
+					repeat(() => {
+						particles.make(1, b, player)
+					}, 30)
 				}
 				console.log('Player hit, took', b.damage, 'damage. Has health', player.hp)
 			}
@@ -72,7 +74,10 @@ const loop = k.gameLoop({
 						// particles.make(1, b, e);
 						e.hp--;
 						b.hp = 0;
-						repeat(() => particles.make(0, b, e), 2)
+						repeat(() => {
+							particles.make(0, b, e)
+							particles.make(2, b)
+						}, 2)
 						if(e.hp <= 0) {
 							repeat(() => particles.make(1, b, e), 20)
 						}

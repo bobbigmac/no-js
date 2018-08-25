@@ -23,7 +23,7 @@ const decay = function() {
 }
 
 const ptypes = [{
-	speed: 5,
+	speed: 1,
 	width: 2,
 	height: 2,
 	defcolor: 'green',
@@ -31,11 +31,19 @@ const ptypes = [{
 	isAlive: pAlive,
 	decay: decay
 },{
-	speed: 3,
+	speed: 1,
 	width: 3,
 	height: 3,
 	defcolor: 'pink',
 	ttl: 240,
+	isAlive: pAlive,
+	decay: decay
+},{
+	speed: 0.5,
+	width: 1,
+	height: 1,
+	defcolor: 'white',
+	ttl: 10,
 	isAlive: pAlive,
 	decay: decay
 }]
@@ -43,11 +51,12 @@ const ptypes = [{
 particles.make = function(type = 0, s1, s2) {
 	s1 && (this.ptypes || [type]).map(type => {
 		const pt = ptypes[type];
+		
 		particles.get(Object.assign({
 			x: s1.x,
 			y: s1.y,
-			dx: (Math.random() * 1.6) - 1,
-			dy: (Math.random() * 2) - 1,
+			dx: ((Math.random() * 1.6) - 1) * pt.speed,
+			dy: ((Math.random() * 2) - 1) * pt.speed,
 			color: (s2 && s2.color) || pt.defcolor || 'white'
 		}, pt))
 	});
