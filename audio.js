@@ -30,7 +30,7 @@ var es = ['click', 'touchdown', 'touchmove', 'keydown'];
 
 var go = () => {
 	es.map(en => reli(en, go))
-	// p()
+	p()
 	a.resume();
 }
 es.map(en => aeli(en, go));

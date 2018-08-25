@@ -7,7 +7,7 @@ const bullets = kontra.pool({
 const bAlive = function() { return this.ttl > 0 && this.y < 320 && this.y > 0 && this.hp > 0 };
 
 const btypes = [{
-	speed: 10,
+	speed: 5,
 	damage: 10,
 	hp: 4,
 	width: 3,
@@ -35,6 +35,7 @@ bullets.fire = function(type = 0, faction = 1) {
 			faction: this.faction,
 			x: this.x + ((this.width / 2) - 1),
 			y: this.y - (-6 * this.faction),
+			// dy: this.dy + (this.faction * bt.speed),
 			dy: this.faction * bt.speed,
 		}, bt))
 

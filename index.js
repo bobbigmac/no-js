@@ -3,6 +3,7 @@ k.init('no');
 
 import bullets from './bullets.mod.js';
 import enemies from './enemies.mod.js';
+import particles from './particles.mod.js';
 
 const player = k.sprite({
 	name: 'player',
@@ -48,32 +49,52 @@ const loop = k.gameLoop({
 		if(k.keys.pressed('space') && now > player.fired + player.fireRate) {
 			player.fire(0, -1);
 			player.fired = now;
+
+			// console.log('player.ddx', player.ddx, 'player.ddy', player.ddy)
 		}
 		
-		bullets.getAliveObjects().map(b => {
+		// particles.getAliveObjects().forEach(p => {
+		// 	// p.decay();
+		// });
+
+		bullets.getAliveObjects().forEach(b => {
 			if(b.faction !== player.faction && player.collidesWith(b)) {
 				player.hp -= b.damage || 1;
 				b.hp = 0;
+				if(player.hp <= 0) {
+					repeat(() => particles.make(1, b, player), 30)
+				}
 				console.log('Player hit, took', b.damage, 'damage. Has health', player.hp)
 			}
 			if(b.faction === player.faction) {
 				enemies.getAliveObjects().some(e => {
 					if(b.collidesWith(e)) {
+						// particles.make(1, b, e);
 						e.hp--;
 						b.hp = 0;
+						repeat(() => particles.make(0, b, e), 2)
+						if(e.hp <= 0) {
+							repeat(() => particles.make(1, b, e), 20)
+						}
 					}
 				})
 			}
 		});
 
-		enemies.getAliveObjects().map(e => {
-			e.move();
-			if(now > e.fired + e.fireRate) {
-				e.fire();
-				e.fired = now;
-			}
-			if(player.collidesWith(e)) {
-				player.hp -= e.speed
+		enemies.getAliveObjects().forEach(e => {
+			if(e.move) {
+				e.move();
+				if(now > e.fired + e.fireRate) {
+					e.fire();
+					e.fired = now;
+				}
+				if(player.collidesWith(e)) {
+					const f = e.force();
+					player.hp -= f;
+					e.hp -= f;
+					
+					particles.make(0, player, e);
+				}
 			}
 		});
 
@@ -85,6 +106,7 @@ const loop = k.gameLoop({
 		player.update();
 
 		bullets.update();
+		particles.update();
 
 		if(!(renders % 100)) {
 			enemies.make(0);
@@ -98,6 +120,8 @@ const loop = k.gameLoop({
 		bullets.render();
 		enemies.render();
 		player.render();
+
+		particles.render();
 	}
 });
 
